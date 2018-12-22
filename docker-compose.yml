@@ -1,0 +1,51 @@
+version: '3.7'
+
+networks:
+    frontend:
+        name: frontend
+        external: false
+    backend:
+        name: backend
+        external: false
+
+services:
+    webboard:
+        build:
+            context: .
+        restart: unless-stopped
+        networks:
+            - frontend
+            - backend
+        volumes:
+            - ./config.php:/var/www/html/config.php
+            - ./data/images:/var/www/html/images
+            - ./data/files:/var/www/html/files
+            - ./data/store:/var/www/html/store
+            - ./data/user_uploads:/var/www/html/user_uploads
+        depends_on:
+            - mysql
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=frontend"
+            - "traefik.backend=webboard"
+            - "traefik.port=80"
+            - "traefik.frontend.rule=Host:smrcnn.smrealms.de"
+
+    mysql:
+        image: mysql:5.7
+        restart: unless-stopped
+        container_name: webboard-mysql
+        networks:
+            - backend
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_USER:          smr_cnn
+            MYSQL_PASSWORD:      ${MYSQL_PASSWORD}
+            MYSQL_DATABASE:      smr_cnn
+        volumes:
+            - db_data:/var/lib/mysql
+        labels:
+            - "traefik.enable=false"
+
+volumes:
+    db_data:
