@@ -1,0 +1,8 @@
+# docker-compose environment file
+/.env
+
+# phpbb configuration file
+/config.php
+
+# Data directories
+/data
