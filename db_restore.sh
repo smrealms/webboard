@@ -5,4 +5,4 @@ if [[ -z "$1" ]]; then
     exit 1
 fi
 
-cat $1 | docker exec -i webboard-mysql mysql -usmr_cnn -p$MYSQL_PASSWORD smr_cnn
+cat $1 | docker exec -i webboard-mysql sh -c 'mysql -usmr_cnn -p$MYSQL_PASSWORD smr_cnn'
